@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+:root {
+  --bg-color: #fff0f5;
+  /* Lavender Blush */
+  --text-color: #4a044e;
+  /* Dark Pink/Purple */
+  --accent-color: #db2777;
+  /* Pink 600 */
+  --accent-glow: rgba(219, 39, 119, 0.4);
+  --secondary-color: #fce7f3;
+  /* Pink 100 */
+  --footer-bg: #fbcfe8;
+  /* Pink 200 */
+  --border-color: rgba(219, 39, 119, 0.2);
+  --muted-text: #831843;
+  --font-main: 'Inter', sans-serif;
+  --transition-speed: 0.3s;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.glow-text {
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.glow-box {
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.btn {
+  padding: 10px 20px;
+  border: 2px solid var(--accent-color);
+  background: transparent;
+  color: var(--accent-color);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn:hover {
+  background: var(--accent-color);
+  color: var(--bg-color);
+  box-shadow: 0 0 20px var(--accent-glow);
+}

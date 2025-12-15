@@ -1,0 +1,113 @@
+.product-card {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px var(--accent-glow);
+}
+
+.product-image {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.1);
+}
+
+.wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.product-card:hover .wishlist-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.wishlist-btn:hover,
+.wishlist-btn.active {
+    background: var(--accent-color);
+    color: var(--bg-color);
+}
+
+.product-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.product-category {
+    font-size: 0.8rem;
+    color: var(--muted-text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.product-name {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.product-price {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-to-cart {
+    width: 100%;
+    font-size: 1rem;
+    font-family: 'Pacifico', cursive;
+    letter-spacing: 1px;
+}
+
+.order-now-btn {
+    width: 100%;
+    font-size: 1rem;
+    background: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    letter-spacing: 1px;
+}
+
+.order-now-btn:hover {
+    background: var(--accent-color);
+    color: #fff;
+}

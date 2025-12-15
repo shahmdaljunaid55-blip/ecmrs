@@ -1,0 +1,176 @@
+/* SSLCommerz Mock Styles */
+.ssl-payment-wrapper {
+    background: #f7f7f7;
+    min-height: 100vh;
+    color: #333;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.ssl-header {
+    background: #fff;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #007bff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.ssl-logo {
+    height: 50px;
+}
+
+.store-info {
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.ssl-body {
+    flex: 1;
+    display: flex;
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.ssl-sidebar {
+    width: 200px;
+    background: #f1f1f1;
+    border-right: 1px solid #ddd;
+}
+
+.ssl-tab {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #e1e1e1;
+    transition: background 0.2s;
+}
+
+.ssl-tab:hover {
+    background: #e9e9e9;
+}
+
+.ssl-tab.active {
+    background: #fff;
+    border-left: 4px solid #007bff;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.ssl-content {
+    flex: 1;
+    padding: 30px;
+}
+
+.ssl-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.ssl-row {
+    display: flex;
+    gap: 15px;
+}
+
+.ssl-pay-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.ssl-pay-btn:hover {
+    background: #0056b3;
+}
+
+.mfs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.mfs-option {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.mfs-option:hover {
+    border-color: #007bff;
+    background: #eef7ff;
+}
+
+.ssl-footer {
+    text-align: center;
+    padding: 20px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+}
+
+.ssl-cancel-btn {
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+/* Success/Fail Page Styles */
+.payment-result-page {
+    padding: 80px 20px;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-card {
+    text-align: center;
+    padding: 50px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.result-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.success .result-icon {
+    color: #2ecc71;
+}
+
+.fail .result-icon {
+    color: #e74c3c;
+}
+
+.result-details {
+    margin: 20px 0;
+    padding: 20px;
+    background: var(--footer-bg);
+    border-radius: 10px;
+}
+
+.redirect-msg {
+    color: var(--muted-text);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
