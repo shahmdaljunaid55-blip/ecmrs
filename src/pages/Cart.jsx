@@ -15,16 +15,16 @@ const Cart = () => {
                     <div className="cart-items">
                         {cartItems.map((item) => (
                             <div key={item.id} className="cart-item glow-box">
-                                <img src={item.image} alt={item.name} />
+                                <img src={item.product_image} alt={item.product_name} />
                                 <div className="item-details">
-                                    <h3>{item.name}</h3>
-                                    <p>৳{item.price.toLocaleString()}</p>
+                                    <h3>{item.product_name}</h3>
+                                    <p>৳{item.product_price.toLocaleString()}</p>
                                     <div className="quantity-handler">
-                                        <button onClick={() => updateCartItemCount(item.quantity - 1, item.id)} disabled={item.quantity === 1}>-</button>
-                                        <input value={item.quantity} onChange={(e) => updateCartItemCount(Number(e.target.value), item.id)} />
-                                        <button onClick={() => updateCartItemCount(item.quantity + 1, item.id)}>+</button>
+                                        <button onClick={() => updateCartItemCount(item.product_id, item.quantity - 1)} disabled={item.quantity === 1}>-</button>
+                                        <input value={item.quantity} onChange={(e) => updateCartItemCount(item.product_id, Number(e.target.value))} />
+                                        <button onClick={() => updateCartItemCount(item.product_id, item.quantity + 1)}>+</button>
                                     </div>
-                                    <button className="remove-btn" onClick={() => removeFromCart(item.id)}>Remove</button>
+                                    <button className="remove-btn" onClick={() => removeFromCart(item.product_id)}>Remove</button>
                                 </div>
                             </div>
                         ))}

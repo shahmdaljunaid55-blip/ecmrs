@@ -95,8 +95,8 @@ const Checkout = () => {
                     <h2>Order Summary</h2>
                     {cartItems.map((item) => (
                         <div key={item.id} className="summary-item-row">
-                            <span>{item.name} x {item.quantity}</span>
-                            <span>৳{(item.price * item.quantity).toLocaleString()}</span>
+                            <span>{item.product_name} x {item.quantity}</span>
+                            <span>৳{(item.product_price * item.quantity).toLocaleString()}</span>
                         </div>
                     ))}
                     <div className="summary-total">

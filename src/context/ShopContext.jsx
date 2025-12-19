@@ -10,221 +10,436 @@ export const ShopProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [wishlistItems, setWishlistItems] = useState([]);
+    const [addresses, setAddresses] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [notifications, setNotifications] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [mobile, setMobile] = useState("");
+    const [loading, setLoading] = useState(false);
+
     const { user, isSignedIn } = useUser();
 
-    const [addresses, setAddresses] = useState(() => {
-        const saved = localStorage.getItem('addresses');
-        return saved ? JSON.parse(saved) : [];
-    });
+    // ==========================================
+    // FETCH DATA ON USER SIGN-IN
+    // ==========================================
 
-    const [mobile, setMobile] = useState(() => {
-        return localStorage.getItem('mobile') || '';
-    });
-
-    // Notification state - fetched from Supabase
-    const [notifications, setNotifications] = useState([]);
-
-    // Fetch Products from Supabase
+    // Fetch Products
     useEffect(() => {
         const fetchProducts = async () => {
             const { data, error } = await supabase
                 .from('products')
-                .select('*');
+                .select('*')
+                .eq('is_active', true);
 
             if (error) {
                 console.error('Error fetching products:', error);
             } else {
-                setProducts(data);
+                setProducts(data || []);
             }
         };
 
         fetchProducts();
     }, []);
 
+    // Fetch user data when signed in
     useEffect(() => {
-        localStorage.setItem('addresses', JSON.stringify(addresses));
-    }, [addresses]);
+        if (!isSignedIn || !user) {
+            // Clear data when signed out
+            setCartItems([]);
+            setWishlistItems([]);
+            setAddresses([]);
+            setOrders([]);
+            setNotifications([]);
+            return;
+        }
 
-    useEffect(() => {
-        localStorage.setItem('mobile', mobile);
-    }, [mobile]);
-
-    // Fetch notifications from Supabase on mount
-    useEffect(() => {
-        if (!isSignedIn || !user) return;
-
-        const fetchNotifications = async () => {
+        const fetchUserData = async () => {
             try {
-                const { data, error } = await supabase
+                // Fetch cart
+                const { data: cartData } = await supabase
+                    .from('cart_items')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                setCartItems(cartData || []);
+
+                // Fetch wishlist
+                const { data: wishlistData } = await supabase
+                    .from('wishlist_items')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                setWishlistItems(wishlistData || []);
+
+                // Fetch addresses
+                const { data: addressData } = await supabase
+                    .from('user_addresses')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('is_default', { ascending: false });
+
+                setAddresses(addressData || []);
+
+                // Fetch notifications
+                const { data: notifData } = await supabase
                     .from('notifications')
                     .select('*')
                     .eq('user_id', user.id)
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
-                setNotifications(data || []);
+                setNotifications(notifData || []);
+
             } catch (error) {
-                console.error('Error fetching notifications:', error);
+                console.error('Error fetching user data:', error);
             }
         };
 
-        fetchNotifications();
+        fetchUserData();
     }, [isSignedIn, user]);
 
-    // Subscribe to real-time order status changes
+    // ==========================================
+    // REAL-TIME SUBSCRIPTIONS
+    // ==========================================
+
     useEffect(() => {
         if (!isSignedIn || !user) return;
 
-        // Subscribe to changes on the orders table
+        // Cart subscription
+        const cartSubscription = supabase
+            .channel('cart-changes')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'cart_items',
+                filter: `user_id=eq.${user.id}`
+            }, (payload) => {
+                if (payload.eventType === 'INSERT') {
+                    setCartItems(prev => [...prev, payload.new]);
+                } else if (payload.eventType === 'UPDATE') {
+                    setCartItems(prev => prev.map(item =>
+                        item.id === payload.new.id ? payload.new : item
+                    ));
+                } else if (payload.eventType === 'DELETE') {
+                    setCartItems(prev => prev.filter(item => item.id !== payload.old.id));
+                }
+            })
+            .subscribe();
+
+        // Wishlist subscription
+        const wishlistSubscription = supabase
+            .channel('wishlist-changes')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'wishlist_items',
+                filter: `user_id=eq.${user.id}`
+            }, (payload) => {
+                if (payload.eventType === 'INSERT') {
+                    setWishlistItems(prev => [...prev, payload.new]);
+                } else if (payload.eventType === 'DELETE') {
+                    setWishlistItems(prev => prev.filter(item => item.id !== payload.old.id));
+                }
+            })
+            .subscribe();
+
+        // Orders subscription for real-time notifications
         const ordersSubscription = supabase
             .channel('order-changes')
-            .on(
-                'postgres_changes',
-                {
-                    event: 'UPDATE',
-                    schema: 'public',
-                    table: 'orders',
-                    filter: `customer_name=eq.${user.fullName}`
-                },
-                async (payload) => {
-                    const updatedOrder = payload.new;
-                    const oldOrder = payload.old;
+            .on('postgres_changes', {
+                event: 'UPDATE',
+                schema: 'public',
+                table: 'orders',
+                filter: `customer_name=eq.${user.fullName}`
+            }, async (payload) => {
+                const updatedOrder = payload.new;
+                const oldOrder = payload.old;
 
-                    // Check if status changed
-                    if (updatedOrder.status !== oldOrder.status) {
-                        // Create notification in Supabase
-                        const notificationData = {
-                            user_id: user.id,
-                            order_id: updatedOrder.id,
-                            order_number: updatedOrder.order_number,
-                            type: 'status_change',
-                            message: getStatusMessage(updatedOrder.status),
-                            status: updatedOrder.status,
-                            old_status: oldOrder.status,
-                            is_read: false
-                        };
+                if (updatedOrder.status !== oldOrder.status) {
+                    const notificationData = {
+                        user_id: user.id,
+                        order_id: updatedOrder.id,
+                        order_number: updatedOrder.order_number,
+                        type: 'status_change',
+                        message: getStatusMessage(updatedOrder.status),
+                        status: updatedOrder.status,
+                        old_status: oldOrder.status,
+                        is_read: false
+                    };
 
-                        const { error } = await supabase
-                            .from('notifications')
-                            .insert([notificationData]);
-
-                        if (error) {
-                            console.error('Error creating notification:', error);
-                        }
-
-                        // Update local order status
-                        setOrders(prev => prev.map(o =>
-                            o.id === updatedOrder.id ? { ...o, status: updatedOrder.status } : o
-                        ));
-                    }
+                    await supabase.from('notifications').insert([notificationData]);
+                    setOrders(prev => prev.map(o =>
+                        o.id === updatedOrder.id ? { ...o, status: updatedOrder.status } : o
+                    ));
                 }
-            )
+            })
             .subscribe();
 
-        // Subscribe to notifications table for real-time updates
+        // Notifications subscription
         const notificationsSubscription = supabase
             .channel('notification-changes')
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'notifications',
-                    filter: `user_id=eq.${user.id}`
-                },
-                (payload) => {
-                    if (payload.eventType === 'INSERT') {
-                        setNotifications(prev => [payload.new, ...prev]);
-                    } else if (payload.eventType === 'UPDATE') {
-                        setNotifications(prev =>
-                            prev.map(n => n.id === payload.new.id ? payload.new : n)
-                        );
-                    } else if (payload.eventType === 'DELETE') {
-                        setNotifications(prev => prev.filter(n => n.id !== payload.old.id));
-                    }
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'notifications',
+                filter: `user_id=eq.${user.id}`
+            }, (payload) => {
+                if (payload.eventType === 'INSERT') {
+                    setNotifications(prev => [payload.new, ...prev]);
+                } else if (payload.eventType === 'UPDATE') {
+                    setNotifications(prev => prev.map(n =>
+                        n.id === payload.new.id ? payload.new : n
+                    ));
+                } else if (payload.eventType === 'DELETE') {
+                    setNotifications(prev => prev.filter(n => n.id !== payload.old.id));
                 }
-            )
+            })
             .subscribe();
 
-        // Cleanup subscriptions on unmount
         return () => {
+            cartSubscription.unsubscribe();
+            wishlistSubscription.unsubscribe();
             ordersSubscription.unsubscribe();
             notificationsSubscription.unsubscribe();
         };
     }, [isSignedIn, user, orders]);
 
-    const userProfile = isSignedIn ? {
-        name: user.fullName,
-        email: user.primaryEmailAddress.emailAddress,
-        imageUrl: user.imageUrl,
-        mobile: mobile,
-        address: addresses.length > 0 ? `${addresses[0].street}, ${addresses[0].city}` : "Address not set"
-    } : null;
+    // ==========================================
+    // CART FUNCTIONS
+    // ==========================================
 
-    const addToCart = (product) => {
-        setCartItems((prev) => {
-            const existingItem = prev.find((item) => item.id === product.id);
-            if (existingItem) {
-                return prev.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
+    const addToCart = async (product) => {
+        if (!isSignedIn || !user) {
+            alert('Please sign in to add items to cart');
+            return;
+        }
+
+        try {
+            const existing = cartItems.find(item => item.product_id === product.id);
+
+            if (existing) {
+                // Update quantity
+                const { error } = await supabase
+                    .from('cart_items')
+                    .update({ quantity: existing.quantity + 1 })
+                    .eq('id', existing.id);
+
+                if (error) throw error;
+            } else {
+                // Insert new item
+                const { error } = await supabase
+                    .from('cart_items')
+                    .insert([{
+                        user_id: user.id,
+                        product_id: product.id,
+                        product_name: product.name,
+                        product_image: product.image,
+                        product_price: product.price,
+                        product_category: product.category,
+                        quantity: 1
+                    }]);
+
+                if (error) throw error;
             }
-            return [...prev, { ...product, quantity: 1 }];
-        });
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            alert('Failed to add item to cart');
+        }
     };
 
-    const removeFromCart = (productId) => {
-        setCartItems((prev) => prev.filter((item) => item.id !== productId));
+    const removeFromCart = async (productId) => {
+        try {
+            const item = cartItems.find(item => item.product_id === productId);
+            if (!item) return;
+
+            const { error } = await supabase
+                .from('cart_items')
+                .delete()
+                .eq('id', item.id);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error removing from cart:', error);
+        }
     };
 
-    const updateCartItemCount = (newAmount, productId) => {
-        setCartItems((prev) =>
-            prev.map((item) => item.id === productId ? { ...item, quantity: newAmount } : item)
-        );
-    };
+    const updateCartItemCount = async (productId, newQuantity) => {
+        if (newQuantity <= 0) {
+            removeFromCart(productId);
+            return;
+        }
 
-    const addToWishlist = (product) => {
-        setWishlistItems((prev) => {
-            if (!prev.find(item => item.id === product.id)) {
-                return [...prev, product];
-            }
-            return prev;
-        });
-    };
+        try {
+            const item = cartItems.find(item => item.product_id === productId);
+            if (!item) return;
 
-    const removeFromWishlist = (productId) => {
-        setWishlistItems((prev) => prev.filter((item) => item.id !== productId));
+            const { error } = await supabase
+                .from('cart_items')
+                .update({ quantity: newQuantity })
+                .eq('id', item.id);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error updating cart:', error);
+        }
     };
 
     const getTotalCartAmount = () => {
-        let totalAmount = 0;
-        for (const item of cartItems) {
-            totalAmount += item.price * item.quantity;
-        }
-        return totalAmount;
+        return cartItems.reduce((total, item) => total + (item.product_price * item.quantity), 0);
     };
 
     const getTotalCartItems = () => {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
-    }
+    };
+
+    // ==========================================
+    // WISHLIST FUNCTIONS
+    // ==========================================
+
+    const addToWishlist = async (product) => {
+        if (!isSignedIn || !user) {
+            alert('Please sign in to add items to wishlist');
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('wishlist_items')
+                .insert([{
+                    user_id: user.id,
+                    product_id: product.id,
+                    product_name: product.name,
+                    product_image: product.image,
+                    product_price: product.price,
+                    product_category: product.category
+                }]);
+
+            if (error) {
+                if (error.code === '23505') {
+                    alert('Item already in wishlist');
+                } else {
+                    throw error;
+                }
+            }
+        } catch (error) {
+            console.error('Error adding to wishlist:', error);
+            alert('Failed to add item to wishlist');
+        }
+    };
+
+    const removeFromWishlist = async (productId) => {
+        try {
+            const item = wishlistItems.find(item => item.product_id === productId);
+            if (!item) return;
+
+            const { error } = await supabase
+                .from('wishlist_items')
+                .delete()
+                .eq('id', item.id);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error removing from wishlist:', error);
+        }
+    };
+
+    // ==========================================
+    // ADDRESS FUNCTIONS
+    // ==========================================
+
+    const addAddress = async (address) => {
+        if (!isSignedIn || !user) return;
+
+        try {
+            const { error } = await supabase
+                .from('user_addresses')
+                .insert([{
+                    user_id: user.id,
+                    ...address,
+                    is_default: addresses.length === 0
+                }]);
+
+            if (error) throw error;
+
+            // Refetch addresses
+            const { data } = await supabase
+                .from('user_addresses')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('is_default', { ascending: false });
+
+            setAddresses(data || []);
+        } catch (error) {
+            console.error('Error adding address:', error);
+            alert('Failed to add address');
+        }
+    };
+
+    const updateAddress = async (id, updatedAddress) => {
+        try {
+            const { error } = await supabase
+                .from('user_addresses')
+                .update(updatedAddress)
+                .eq('id', id);
+
+            if (error) throw error;
+
+            const { data } = await supabase
+                .from('user_addresses')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('is_default', { ascending: false });
+
+            setAddresses(data || []);
+        } catch (error) {
+            console.error('Error updating address:', error);
+        }
+    };
+
+    const deleteAddress = async (id) => {
+        try {
+            const { error } = await supabase
+                .from('user_addresses')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            setAddresses(prev => prev.filter(addr => addr.id !== id));
+        } catch (error) {
+            console.error('Error deleting address:', error);
+        }
+    };
+
+    const updateMobile = (newMobile) => {
+        setMobile(newMobile);
+        localStorage.setItem('mobile', newMobile);
+    };
+
+    // ==========================================
+    // ORDER FUNCTIONS
+    // ==========================================
 
     const placeOrder = async (paymentMethod, address) => {
+        if (!isSignedIn || !user) {
+            alert('Please sign in to place an order');
+            return;
+        }
+
         try {
-            // Generate unique order number
+            setLoading(true);
             const orderNumber = `ORD-${new Date().getFullYear()}-${Date.now()}`;
 
-            // Prepare order data for Supabase (matching actual schema)
             const orderData = {
                 order_number: orderNumber,
-                customer_name: user?.fullName || 'Guest User',
+                user_id: user.id,
+                customer_name: user.fullName || 'Guest User',
                 total: getTotalCartAmount(),
-                date: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
-                status: 'pending'
+                date: new Date().toISOString().split('T')[0],
+                status: 'pending',
+                payment_method: paymentMethod,
+                shipping_address: address
             };
 
-            // Insert order into Supabase
             const { data: newOrder, error: orderError } = await supabase
                 .from('orders')
                 .insert([orderData])
@@ -233,12 +448,12 @@ export const ShopProvider = ({ children }) => {
 
             if (orderError) throw orderError;
 
-            // Insert order items into Supabase (matching actual schema)
             const orderItems = cartItems.map(item => ({
                 order_id: newOrder.id,
-                product_name: item.name,
+                product_id: item.product_id,
+                product_name: item.product_name,
                 quantity: item.quantity,
-                price: item.price
+                price: item.product_price
             }));
 
             const { error: itemsError } = await supabase
@@ -247,17 +462,25 @@ export const ShopProvider = ({ children }) => {
 
             if (itemsError) throw itemsError;
 
-            // Create complete order object with items for local state
+            // Clear cart
+            const { error: clearError } = await supabase
+                .from('cart_items')
+                .delete()
+                .eq('user_id', user.id);
+
+            if (clearError) throw clearError;
+
             const completeOrder = {
                 ...newOrder,
                 items: cartItems.map(item => ({
-                    name: item.name,
+                    name: item.product_name,
                     quantity: item.quantity,
-                    price: item.price
-                }))
+                    price: item.product_price
+                })),
+                paymentMethod,
+                address
             };
 
-            // Update local state
             setOrders(prev => [completeOrder, ...prev]);
             setCartItems([]);
 
@@ -267,52 +490,14 @@ export const ShopProvider = ({ children }) => {
             console.error('Error placing order:', error);
             alert('Failed to place order. Please try again.');
             throw error;
+        } finally {
+            setLoading(false);
         }
     };
 
-    const addAddress = (address) => {
-        setAddresses(prev => [...prev, { ...address, id: Date.now() }]);
-    };
-
-    const updateAddress = (id, updatedAddress) => {
-        setAddresses(prev => prev.map(addr => addr.id === id ? { ...updatedAddress, id } : addr));
-    };
-
-    const deleteAddress = (id) => {
-        setAddresses(prev => prev.filter(addr => addr.id !== id));
-    };
-
-    const updateMobile = (newMobile) => {
-        setMobile(newMobile);
-    };
-
-    // Notification management functions - now using Supabase
-    const addNotification = async (type, message, orderId, orderNumber, status) => {
-        if (!user) return;
-
-        const notificationData = {
-            user_id: user.id,
-            order_id: orderId,
-            order_number: orderNumber,
-            type,
-            message,
-            status,
-            is_read: false
-        };
-
-        try {
-            const { data, error } = await supabase
-                .from('notifications')
-                .insert([notificationData])
-                .select()
-                .single();
-
-            if (error) throw error;
-            // Real-time subscription will add it to local state automatically
-        } catch (error) {
-            console.error('Error adding notification:', error);
-        }
-    };
+    // ==========================================
+    // NOTIFICATION FUNCTIONS
+    // ==========================================
 
     const markAsRead = async (notificationId) => {
         try {
@@ -322,7 +507,6 @@ export const ShopProvider = ({ children }) => {
                 .eq('id', notificationId);
 
             if (error) throw error;
-            // Real-time subscription will update local state automatically
         } catch (error) {
             console.error('Error marking notification as read:', error);
         }
@@ -339,7 +523,6 @@ export const ShopProvider = ({ children }) => {
                 .eq('is_read', false);
 
             if (error) throw error;
-            // Real-time subscription will update local state automatically
         } catch (error) {
             console.error('Error marking all as read:', error);
         }
@@ -353,7 +536,6 @@ export const ShopProvider = ({ children }) => {
                 .eq('id', notificationId);
 
             if (error) throw error;
-            // Real-time subscription will update local state automatically
         } catch (error) {
             console.error('Error deleting notification:', error);
         }
@@ -369,17 +551,21 @@ export const ShopProvider = ({ children }) => {
                 .eq('user_id', user.id);
 
             if (error) throw error;
-            // Real-time subscription will update local state automatically
         } catch (error) {
             console.error('Error clearing notifications:', error);
         }
     };
 
-    // Get unread notification count
     const unreadCount = notifications.filter(n => !n.is_read).length;
 
+    const userProfile = isSignedIn ? {
+        name: user.fullName,
+        email: user.primaryEmailAddress.emailAddress,
+        image: user.imageUrl
+    } : null;
+
     const contextValue = {
-        products, // Expose products
+        products,
         cartItems,
         addToCart,
         removeFromCart,
@@ -398,15 +584,15 @@ export const ShopProvider = ({ children }) => {
         addAddress,
         updateAddress,
         deleteAddress,
+        mobile,
         updateMobile,
-        // Notification system
         notifications,
         unreadCount,
-        addNotification,
         markAsRead,
         markAllAsRead,
         deleteNotification,
-        clearAllNotifications
+        clearAllNotifications,
+        loading
     };
 
     return (
