@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 import { ShopProvider } from './context/ShopContext';
+import { ToastProvider } from './context/ToastContext';
 import { AdminProvider } from './admin/context/AdminContext';
 import { syncUserToSupabase } from './utils/syncUserToSupabase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Hero from './components/Hero';
 import ProductGrid from './components/ProductGrid';
+import ToastContainer from './components/ToastContainer';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
@@ -41,48 +43,51 @@ function App() {
   }, [user, isLoaded]);
 
   return (
-    <ShopProvider>
-      <AdminProvider>
-        <Router>
-          <Routes>
-            {/* Customer-facing routes */}
-            <Route path="/" element={
-              <>
-                <Navbar />
-                <div className="App">
-                  <Hero />
-                  <Categories />
-                  <HotDeals />
-                  <ProductGrid />
-                  <Footer />
-                </div>
-              </>
-            } />
-            <Route path="/cart" element={<><Navbar /><Cart /><Footer /></>} />
-            <Route path="/wishlist" element={<><Navbar /><Wishlist /><Footer /></>} />
-            <Route path="/profile" element={<><Navbar /><Profile /><Footer /></>} />
-            <Route path="/contact" element={<><Navbar /><Contact /><Footer /></>} />
-            <Route path="/checkout" element={<><Navbar /><Checkout /><Footer /></>} />
-            <Route path="/notifications" element={<><Navbar /><Notifications /><Footer /></>} />
-            <Route path="/payment/sslcommerz" element={<><Navbar /><SSLCommerzPayment /><Footer /></>} />
-            <Route path="/payment/success" element={<><Navbar /><PaymentSuccess /><Footer /></>} />
-            <Route path="/payment/fail" element={<><Navbar /><PaymentFail /><Footer /></>} />
+    <ToastProvider>
+      <ShopProvider>
+        <AdminProvider>
+          <Router>
+            <ToastContainer />
+            <Routes>
+              {/* Customer-facing routes */}
+              <Route path="/" element={
+                <>
+                  <Navbar />
+                  <div className="App">
+                    <Hero />
+                    <Categories />
+                    <HotDeals />
+                    <ProductGrid />
+                    <Footer />
+                  </div>
+                </>
+              } />
+              <Route path="/cart" element={<><Navbar /><Cart /><Footer /></>} />
+              <Route path="/wishlist" element={<><Navbar /><Wishlist /><Footer /></>} />
+              <Route path="/profile" element={<><Navbar /><Profile /><Footer /></>} />
+              <Route path="/contact" element={<><Navbar /><Contact /><Footer /></>} />
+              <Route path="/checkout" element={<><Navbar /><Checkout /><Footer /></>} />
+              <Route path="/notifications" element={<><Navbar /><Notifications /><Footer /></>} />
+              <Route path="/payment/sslcommerz" element={<><Navbar /><SSLCommerzPayment /><Footer /></>} />
+              <Route path="/payment/success" element={<><Navbar /><PaymentSuccess /><Footer /></>} />
+              <Route path="/payment/fail" element={<><Navbar /><PaymentFail /><Footer /></>} />
 
-            {/* Admin routes */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="products" element={<ProductsManagement />} />
-              <Route path="products/add" element={<ProductForm />} />
-              <Route path="products/edit/:id" element={<ProductForm />} />
-              <Route path="orders" element={<OrdersManagement />} />
-              <Route path="users" element={<UsersManagement />} />
-              <Route path="categories" element={<CategoriesManagement />} />
-            </Route>
-          </Routes>
-        </Router>
-      </AdminProvider>
-    </ShopProvider>
+              {/* Admin routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="products" element={<ProductsManagement />} />
+                <Route path="products/add" element={<ProductForm />} />
+                <Route path="products/edit/:id" element={<ProductForm />} />
+                <Route path="orders" element={<OrdersManagement />} />
+                <Route path="users" element={<UsersManagement />} />
+                <Route path="categories" element={<CategoriesManagement />} />
+              </Route>
+            </Routes>
+          </Router>
+        </AdminProvider>
+      </ShopProvider>
+    </ToastProvider>
   );
 }
 

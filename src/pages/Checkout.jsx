@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
+import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 import './Checkout.css';
 
 const Checkout = () => {
     const { cartItems, getTotalCartAmount, addresses, placeOrder } = useContext(ShopContext);
+    const { showWarning, showSuccess } = useToast();
     const [selectedAddressId, setSelectedAddressId] = useState(addresses.length > 0 ? addresses[0].id : null);
     const [paymentMethod, setPaymentMethod] = useState('cod');
     const navigate = useNavigate();
@@ -12,7 +14,7 @@ const Checkout = () => {
 
     const handlePlaceOrder = async () => {
         if (!selectedAddressId) {
-            alert("Please select a shipping address.");
+            showWarning("Please select a shipping address.");
             return;
         }
 
@@ -23,7 +25,7 @@ const Checkout = () => {
         } else {
             try {
                 await placeOrder(paymentMethod, address);
-                alert("Order placed successfully!");
+                showSuccess("Order placed successfully!");
                 navigate('/profile');
             } catch (error) {
                 // Error already handled in placeOrder

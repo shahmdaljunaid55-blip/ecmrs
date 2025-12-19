@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
-import { RedirectToSignIn, SignedIn, SignedOut, UserProfile } from '@clerk/clerk-react';
+import { RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
+import ClerkProfileSection from '../components/ClerkProfileSection';
 import './Profile.css';
 
 const Profile = () => {
@@ -248,6 +249,9 @@ const Profile = () => {
                         <p>No orders yet.</p>
                     )}
                 </div>
+
+                {/* Clerk Account Settings */}
+                <ClerkProfileSection />
             </div>
         </div>
     );

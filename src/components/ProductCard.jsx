@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { FaHeart } from 'react-icons/fa';
 import { ShopContext } from '../context/ShopContext';
+import { useToast } from '../context/ToastContext';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
     const { addToCart, addToWishlist, wishlistItems } = useContext(ShopContext);
+    const { showWarning } = useToast();
     const isInWishlist = wishlistItems.some(item => item.product_id === product.id);
 
     const stock = product.stock_quantity || 0;
@@ -13,7 +15,7 @@ const ProductCard = ({ product }) => {
 
     const handleAddToCart = () => {
         if (isOutOfStock) {
-            alert('This product is out of stock');
+            showWarning('This product is out of stock');
             return;
         }
         addToCart(product);

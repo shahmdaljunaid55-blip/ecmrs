@@ -3,6 +3,7 @@ import { useUser } from '@clerk/clerk-react';
 import { ShopContext } from './Context';
 import { supabase } from '../supabase';
 import { createNotification, getStatusMessage } from '../utils/notificationUtils';
+import { useToast } from './ToastContext';
 
 export { ShopContext };
 
@@ -18,6 +19,7 @@ export const ShopProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
 
     const { user, isSignedIn } = useUser();
+    const { showSuccess, showError, showWarning, showInfo } = useToast();
 
     // ==========================================
     // FETCH DATA ON USER SIGN-IN
@@ -226,7 +228,7 @@ export const ShopProvider = ({ children }) => {
 
     const addToCart = async (product) => {
         if (!isSignedIn || !user) {
-            alert('Please sign in to add items to cart');
+            showWarning('Please sign in to add items to cart');
             return;
         }
 
@@ -259,7 +261,7 @@ export const ShopProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Error adding to cart:', error);
-            alert('Failed to add item to cart');
+            showError('Failed to add item to cart');
         }
     };
 
@@ -314,7 +316,7 @@ export const ShopProvider = ({ children }) => {
 
     const addToWishlist = async (product) => {
         if (!isSignedIn || !user) {
-            alert('Please sign in to add items to wishlist');
+            showWarning('Please sign in to add items to wishlist');
             return;
         }
 
@@ -332,14 +334,14 @@ export const ShopProvider = ({ children }) => {
 
             if (error) {
                 if (error.code === '23505') {
-                    alert('Item already in wishlist');
+                    showInfo('Item already in wishlist');
                 } else {
                     throw error;
                 }
             }
         } catch (error) {
             console.error('Error adding to wishlist:', error);
-            alert('Failed to add item to wishlist');
+            showError('Failed to add item to wishlist');
         }
     };
 
@@ -387,7 +389,7 @@ export const ShopProvider = ({ children }) => {
             setAddresses(data || []);
         } catch (error) {
             console.error('Error adding address:', error);
-            alert('Failed to add address');
+            showError('Failed to add address');
         }
     };
 
@@ -438,7 +440,7 @@ export const ShopProvider = ({ children }) => {
 
     const placeOrder = async (paymentMethod, address) => {
         if (!isSignedIn || !user) {
-            alert('Please sign in to place an order');
+            showWarning('Please sign in to place an order');
             return;
         }
 
@@ -505,7 +507,7 @@ export const ShopProvider = ({ children }) => {
             return newOrder;
         } catch (error) {
             console.error('Error placing order:', error);
-            alert('Failed to place order. Please try again.');
+            showError('Failed to place order. Please try again.');
             throw error;
         } finally {
             setLoading(false);
