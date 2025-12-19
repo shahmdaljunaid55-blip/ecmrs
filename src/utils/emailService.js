@@ -23,9 +23,9 @@ export const sendOrderConfirmation = async (order, user) => {
         to_email: user?.primaryEmailAddress?.emailAddress,
         order_id: order.id,
         order_date: new Date().toLocaleDateString(),
-        total_amount: order.total_amount.toLocaleString(), // Just number, symbol is in template
+        total_amount: (order.total_amount || 0).toLocaleString(),
         shipping_address: `${order.shipping_address?.street}, ${order.shipping_address?.city}, ${order.shipping_address?.zip}`,
-        items_list: order.items?.map(item => `${item.product_name} (x${item.quantity}) - ৳${(item.price * item.quantity).toLocaleString()}`).join('\n'),
+        items_list: order.items?.map(item => `${item.name} (x${item.quantity}) - ৳${(item.price * item.quantity).toLocaleString()}`).join('\n'),
         status: order.status
     };
 
