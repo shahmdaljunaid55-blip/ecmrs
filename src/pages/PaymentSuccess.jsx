@@ -48,7 +48,7 @@ const PaymentSuccess = () => {
                     <FaCheckCircle className="result-icon-modern" />
                 </div>
                 <h1 className="success-title">Order Confirmed!</h1>
-                <p className="success-message">Thank you for your purchase. Your order has been placed successfully.</p>
+                <p className="success-message">Your order has been placed successfully. You will get a confirmation email shortly.</p>
 
                 <div className="order-receipt">
                     <div className="receipt-row">

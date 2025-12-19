@@ -25,7 +25,7 @@ const Checkout = () => {
         } else {
             try {
                 await placeOrder(paymentMethod, address);
-                showSuccess("Order placed successfully!");
+                showSuccess("Order placed successfully! You will get a confirmation email shortly.");
                 navigate('/profile');
             } catch (error) {
                 // Error already handled in placeOrder
