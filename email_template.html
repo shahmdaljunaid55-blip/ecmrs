@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #800020;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .greeting {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            color: #2c2c2c;
+            margin-bottom: 16px;
+        }
+
+        .message {
+            color: #666666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .order-box {
+            background-color: #fafafa;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .order-id {
+            color: #800020;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .order-date {
+            color: #999999;
+            font-size: 14px;
+        }
+
+        .item-list {
+            white-space: pre-line;
+            color: #444444;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-family: 'Inter', monospace;
+        }
+
+        .total-row {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-label {
+            color: #666666;
+            font-weight: 500;
+        }
+
+        .total-amount {
+            color: #800020;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .shipping-box {
+            margin-top: 20px;
+        }
+
+        .shipping-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999999;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .shipping-address {
+            color: #444444;
+            font-size: 14px;
+        }
+
+        .footer {
+            background-color: #f9f9f9;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #eeeeee;
+        }
+
+        .social-links {
+            margin-bottom: 20px;
+        }
+
+        .footer-text {
+            color: #999999;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #800020;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #600018;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="logo">Nafis | Mashnuba</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2 class="greeting">Hello {{to_name}},</h2>
+            <p class="message">
+                Thank you for choosing us. Your order has been confirmed and is being processed with clear. We're
+                getting everything ready for you!
+            </p>
+
+            <!-- Order Details Box -->
+            <div class="order-box">
+                <div class="order-header">
+                    <span class="order-id">ORDER #{{order_id}}</span>
+                    <span class="order-date">{{order_date}}</span>
+                </div>
+
+                <!-- Items -->
+                <div class="item-list">
+                    {{items_list}}
+                </div>
+
+                <!-- Total -->
+                <div class="total-row">
+                    <span class="total-label">Total Amount</span>
+                    <span class="total-amount">${{total_amount}}</span>
+                </div>
+            </div>
+
+            <!-- Shipping Details -->
+            <div class="shipping-box">
+                <div class="shipping-label">Shipping To</div>
+                <div class="shipping-address">
+                    {{shipping_address}}
+                </div>
+            </div>
+
+            <center>
+                <a href="#" class="button">View Order Status</a>
+            </center>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">
+                Need help? Contact our support team.
+            </p>
+            <p class="footer-text">
+                &copy; 2024 Nafis | Mashnuba. All rights reserved.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

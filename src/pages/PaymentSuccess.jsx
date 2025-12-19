@@ -43,16 +43,26 @@ const PaymentSuccess = () => {
 
     return (
         <div className="payment-result-page container">
-            <div className="result-card glow-box success">
-                <FaCheckCircle className="result-icon" />
-                <h1>Payment Successful!</h1>
-                <p>Your transaction has been completed.</p>
-                <div className="result-details">
-                    <p>Amount Paid: <strong>৳{totalAmount.toLocaleString()}</strong></p>
-                    <p>Transaction ID: <strong>TXN_{Date.now()}</strong></p>
+            <div className="result-card glow-box success-modern">
+                <div className="icon-wrapper">
+                    <FaCheckCircle className="result-icon-modern" />
                 </div>
-                <p className="redirect-msg">Redirecting to your profile...</p>
-                <button className="btn" onClick={() => navigate('/profile')}>Go to Profile Now</button>
+                <h1 className="success-title">Order Confirmed!</h1>
+                <p className="success-message">Thank you for your purchase. Your order has been placed successfully.</p>
+
+                <div className="order-receipt">
+                    <div className="receipt-row">
+                        <span>Amount Paid</span>
+                        <span className="price">৳{totalAmount.toLocaleString()}</span>
+                    </div>
+                    <div className="receipt-row">
+                        <span>Transaction ID</span>
+                        <span className="txn">TXN_{Date.now().toString().slice(-8)}</span>
+                    </div>
+                </div>
+
+                <p className="redirect-msg">We are redirecting you to your profile...</p>
+                <button className="btn btn-modern-outline" onClick={() => navigate('/profile')}>Go to Profile Now</button>
             </div>
         </div>
     );
