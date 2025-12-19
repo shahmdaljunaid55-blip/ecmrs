@@ -6,6 +6,7 @@ import { clerkAppearance } from '../config/clerkTheme';
 import { ShopContext } from '../context/ShopContext';
 import SearchBar from './SearchBar';
 import './Navbar.css';
+import './ClerkOverrides.css';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);

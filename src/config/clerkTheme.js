@@ -228,6 +228,46 @@ export const clerkAppearance = {
             borderBottom: '3px solid #800020',
         },
 
+        // User Preview (dropdown header)
+        userPreviewMainIdentifier: {
+            fontFamily: '"Cormorant Garamond", serif',
+            color: '#800020',
+            fontSize: '1.1rem',
+            fontWeight: '700',
+        },
+        userPreviewSecondaryIdentifier: {
+            fontFamily: '"Cormorant Garamond", serif',
+            color: '#666',
+            fontSize: '0.9rem',
+        },
+
+        // Dropdown menu items
+        userButtonPopoverCard: {
+            background: '#FFFFFF',
+            border: '1px solid rgba(128, 0, 32, 0.1)',
+            borderRadius: '12px',
+            boxShadow: '0 10px 40px rgba(128, 0, 32, 0.15)',
+        },
+        userButtonPopoverActionButton: {
+            fontFamily: '"Cormorant Garamond", serif',
+            color: '#2c2c2c',
+            fontSize: '1rem',
+            padding: '12px 16px',
+            borderRadius: '8px',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+                background: 'rgba(128, 0, 32, 0.1)',
+                color: '#800020',
+            },
+        },
+        userButtonPopoverActionButtonIcon: {
+            color: '#800020',
+        },
+        userButtonPopoverActionButtonText: {
+            fontFamily: '"Cormorant Garamond", serif',
+            fontWeight: '500',
+        },
+
         // Footer
         footer: {
             background: 'transparent',
