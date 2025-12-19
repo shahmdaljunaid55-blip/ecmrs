@@ -74,13 +74,16 @@ const Navbar = () => {
                         </Link>
 
                         <SignedOut>
-                            <SignInButton mode="modal">
+                            <SignInButton mode="modal" appearance={clerkAppearance}>
                                 <button className="btn login-btn">Sign In</button>
                             </SignInButton>
                         </SignedOut>
                         <SignedIn>
                             <Link to="/profile" className="action-icon"><FaUser /></Link>
-                            <UserButton />
+                            <UserButton
+                                appearance={clerkAppearance}
+                                afterSignOutUrl="/"
+                            />
                         </SignedIn>
                     </div>
                 </div>
