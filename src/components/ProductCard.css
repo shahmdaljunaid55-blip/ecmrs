@@ -60,6 +60,31 @@
     border-color: var(--text-color);
 }
 
+/* Stock Badges */
+.out-of-stock-badge,
+.low-stock-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 0;
+    z-index: 2;
+}
+
+.out-of-stock-badge {
+    background: var(--text-color);
+    color: #FFFFFF;
+}
+
+.low-stock-badge {
+    background: #FFA500;
+    color: #FFFFFF;
+}
+
 .product-info {
     padding: 20px;
     text-align: center;
@@ -104,4 +129,20 @@
     font-weight: 600;
     padding: 12px;
     border: 1.5px solid var(--text-color);
+}
+
+.add-to-cart.disabled,
+.add-to-cart:disabled {
+    background: #e0e0e0;
+    color: #999;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.add-to-cart.disabled:hover,
+.add-to-cart:disabled:hover {
+    background: #e0e0e0;
+    color: #999;
+    transform: none;
 }
