@@ -10,14 +10,17 @@ const Profile = () => {
     const [currentAddress, setCurrentAddress] = useState(null);
     const [mobileInput, setMobileInput] = useState('');
     const [formData, setFormData] = useState({
-        division: '',
-        district: '',
-        thana: '',
+        full_name: '',
         street: '',
-        postCode: ''
+        city: '',
+        state: '',
+        zip: '',
+        country: 'Bangladesh',
+        phone: '',
+        is_default: false
     });
 
-    const divisions = ["Dhaka", "Chittagong", "Rajshahi", "Khulna", "Barisal", "Sylhet", "Rangpur", "Mymensingh"];
+    const bangladeshStates = ["Dhaka", "Chittagong", "Rajshahi", "Khulna", "Barisal", "Sylhet", "Rangpur", "Mymensingh"];
 
     if (!userProfile) {
         return (
@@ -35,7 +38,16 @@ const Profile = () => {
 
     const handleAddClick = () => {
         setCurrentAddress(null);
-        setFormData({ division: '', district: '', thana: '', street: '', postCode: '' });
+        setFormData({
+            full_name: userProfile.name || '',
+            street: '',
+            city: '',
+            state: '',
+            zip: '',
+            country: 'Bangladesh',
+            phone: '',
+            is_default: false
+        });
         setIsEditingAddress(true);
     };
 
@@ -46,7 +58,8 @@ const Profile = () => {
     };
 
     const handleFormChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+        setFormData({ ...formData, [e.target.name]: value });
     };
 
     const handleFormSubmit = (e) => {
@@ -71,8 +84,8 @@ const Profile = () => {
                 <div className="profile-card glow-box">
                     <div className="profile-header">
                         <div className="avatar">
-                            {userProfile.imageUrl ? (
-                                <img src={userProfile.imageUrl} alt={userProfile.name} />
+                            {userProfile.image ? (
+                                <img src={userProfile.image} alt={userProfile.name} />
                             ) : (
                                 userProfile.name ? userProfile.name.charAt(0) : 'U'
                             )}
@@ -88,7 +101,6 @@ const Profile = () => {
                                         placeholder="Enter Mobile Number (+880...)"
                                         value={mobileInput}
                                         onChange={(e) => setMobileInput(e.target.value)}
-                                        defaultValue={userProfile.mobile}
                                     />
                                     <button className="btn save-btn" onClick={handleMobileUpdate}>Save</button>
                                     <button className="btn cancel-btn" onClick={() => setIsEditingMobile(false)}>Cancel</button>
@@ -113,14 +125,63 @@ const Profile = () => {
 
                     {isEditingAddress && (
                         <form className="address-form" onSubmit={handleFormSubmit}>
-                            <select name="division" value={formData.division} onChange={handleFormChange} required>
-                                <option value="">Select Division</option>
-                                {divisions.map(div => <option key={div} value={div}>{div}</option>)}
+                            <input
+                                type="text"
+                                name="full_name"
+                                placeholder="Full Name"
+                                value={formData.full_name}
+                                onChange={handleFormChange}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="street"
+                                placeholder="Street Address/House No."
+                                value={formData.street}
+                                onChange={handleFormChange}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="city"
+                                placeholder="City/District"
+                                value={formData.city}
+                                onChange={handleFormChange}
+                                required
+                            />
+                            <select
+                                name="state"
+                                value={formData.state}
+                                onChange={handleFormChange}
+                                required
+                            >
+                                <option value="">Select Division/State</option>
+                                {bangladeshStates.map(state => <option key={state} value={state}>{state}</option>)}
                             </select>
-                            <input type="text" name="district" placeholder="District" value={formData.district} onChange={handleFormChange} required />
-                            <input type="text" name="thana" placeholder="Thana/Upazila" value={formData.thana} onChange={handleFormChange} required />
-                            <input type="text" name="street" placeholder="Street Address/House No." value={formData.street} onChange={handleFormChange} required />
-                            <input type="text" name="postCode" placeholder="Post Code" value={formData.postCode} onChange={handleFormChange} required />
+                            <input
+                                type="text"
+                                name="zip"
+                                placeholder="Postal/ZIP Code"
+                                value={formData.zip}
+                                onChange={handleFormChange}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="phone"
+                                placeholder="Phone Number (Optional)"
+                                value={formData.phone}
+                                onChange={handleFormChange}
+                            />
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name="is_default"
+                                    checked={formData.is_default}
+                                    onChange={handleFormChange}
+                                />
+                                Set as default address
+                            </label>
                             <div className="form-actions">
                                 <button type="submit" className="btn save-btn">Save</button>
                                 <button type="button" className="btn cancel-btn" onClick={() => setIsEditingAddress(false)}>Cancel</button>
@@ -131,10 +192,13 @@ const Profile = () => {
                     <div className="address-list">
                         {addresses.length > 0 ? (
                             addresses.map((addr) => (
-                                <div key={addr.id} className="address-item">
-                                    <p><strong>{addr.street}</strong></p>
-                                    <p>{addr.thana}, {addr.district} - {addr.postCode}</p>
-                                    <p>{addr.division}</p>
+                                <div key={addr.id} className={`address-item ${addr.is_default ? 'default-address' : ''}`}>
+                                    {addr.is_default && <span className="default-badge">Default</span>}
+                                    <p><strong>{addr.full_name}</strong></p>
+                                    <p>{addr.street}</p>
+                                    <p>{addr.city}, {addr.state} {addr.zip}</p>
+                                    <p>{addr.country}</p>
+                                    {addr.phone && <p>Phone: {addr.phone}</p>}
                                     <div className="address-actions">
                                         <button className="btn edit-btn" onClick={() => handleEditClick(addr)}>Edit</button>
                                         <button className="btn delete-btn" onClick={() => handleDeleteClick(addr.id)}>Delete</button>
