@@ -149,12 +149,15 @@ export const ShopProvider = ({ children }) => {
                 event: 'UPDATE',
                 schema: 'public',
                 table: 'orders',
-                filter: `customer_name=eq.${user.fullName}`
+                filter: `user_id=eq.${user.id}`
             }, async (payload) => {
+                console.log('Order status changed:', payload);
                 const updatedOrder = payload.new;
                 const oldOrder = payload.old;
 
                 if (updatedOrder.status !== oldOrder.status) {
+                    console.log(`Status changed from ${oldOrder.status} to ${updatedOrder.status}`);
+
                     const notificationData = {
                         user_id: user.id,
                         order_id: updatedOrder.id,
@@ -166,7 +169,21 @@ export const ShopProvider = ({ children }) => {
                         is_read: false
                     };
 
-                    await supabase.from('notifications').insert([notificationData]);
+                    try {
+                        const { data, error } = await supabase
+                            .from('notifications')
+                            .insert([notificationData])
+                            .select();
+
+                        if (error) {
+                            console.error('Error creating notification:', error);
+                        } else {
+                            console.log('Notification created successfully:', data);
+                        }
+                    } catch (error) {
+                        console.error('Error inserting notification:', error);
+                    }
+
                     setOrders(prev => prev.map(o =>
                         o.id === updatedOrder.id ? { ...o, status: updatedOrder.status } : o
                     ));
