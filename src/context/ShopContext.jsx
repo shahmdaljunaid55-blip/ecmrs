@@ -452,11 +452,11 @@ export const ShopProvider = ({ children }) => {
             const orderData = {
                 order_number: orderNumber,
                 user_id: user.id,
-                customer_name: user.fullName || 'Guest User',
+                customer_name: user.fullName || 'Customer',
                 total: getTotalCartAmount(),
+                payment_method: paymentMethod,
                 date: new Date().toISOString().split('T')[0],
                 status: 'pending',
-                payment_method: paymentMethod,
                 shipping_address: address
             };
 
