@@ -100,6 +100,12 @@
     align-items: center;
 }
 
+.notification-icon {
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+}
+
 .notification-icon .notification-badge {
     position: absolute;
     top: -8px;
