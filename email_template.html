@@ -184,21 +184,36 @@
 
             <!-- Order Details Box -->
             <div class="order-box">
-                <div class="order-header">
-                    <span class="order-id">ORDER #{{order_id}}</span>
-                    <span class="order-date">{{order_date}}</span>
-                </div>
-
-                <!-- Items -->
-                <div class="item-list">
-                    {{items_list}}
-                </div>
-
-                <!-- Total -->
-                <div class="total-row">
-                    <span class="total-label">Total Amount</span>
-                    <span class="total-amount">${{total_amount}}</span>
-                </div>
+                <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                    <tr>
+                        <td align="left" style="padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                            <span class="order-id">ORDER #{{order_id}}</span>
+                        </td>
+                        <td align="right" style="padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                            <span class="order-date">{{order_date}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 20px 0;">
+                            <div class="item-list">
+                                {{items_list}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border-top: 1px solid #e0e0e0; padding-top: 15px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="left" class="total-label" style="font-weight: 600; color: #666;">Total
+                                        Amount</td>
+                                    <td align="right" class="total-amount"
+                                        style="font-size: 24px; color: #800020; font-weight: 700;">৳{{total_amount}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
             <!-- Shipping Details -->
