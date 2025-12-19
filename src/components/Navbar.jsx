@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaShoppingCart, FaHeart, FaUser, FaBell } from 'react-icons/fa';
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { clerkAppearance } from '../config/clerkTheme';
 import { ShopContext } from '../context/ShopContext';
 import SearchBar from './SearchBar';
 import './Navbar.css';
