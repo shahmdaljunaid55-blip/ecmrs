@@ -4,6 +4,7 @@ import { ShopContext } from './Context';
 import { supabase } from '../supabase';
 import { createNotification, getStatusMessage } from '../utils/notificationUtils';
 import { useToast } from './ToastContext';
+import { sendOrderConfirmation } from '../utils/emailService';
 
 export { ShopContext };
 
@@ -502,6 +503,9 @@ export const ShopProvider = ({ children }) => {
 
             setOrders(prev => [completeOrder, ...prev]);
             setCartItems([]);
+
+            // Send confirmation email
+            await sendOrderConfirmation(completeOrder, user);
 
             console.log('Order placed successfully:', newOrder.order_number);
             return newOrder;
