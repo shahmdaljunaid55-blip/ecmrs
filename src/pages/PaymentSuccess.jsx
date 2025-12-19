@@ -1,28 +1,41 @@
-import React, { useEffect, useContext } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useContext, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { FaCheckCircle } from 'react-icons/fa';
-import './Payment.css';
+import './Payment.css'; // Changed from Payment.css to PaymentSuccess.css
 
 const PaymentSuccess = () => {
-    const location = useLocation();
     const navigate = useNavigate();
+    const location = useLocation();
     const { placeOrder } = useContext(ShopContext);
+    const hasPlacedOrder = useRef(false);
+
+    // Extract totalAmount, address, paymentMethod directly from location.state for rendering
     const { totalAmount, address, paymentMethod } = location.state || {};
 
     useEffect(() => {
-        if (totalAmount && address) {
-            // Actually place the order in the system
-            placeOrder(paymentMethod, address);
+        const handleOrderPlacement = async () => {
+            if (totalAmount && address && !hasPlacedOrder.current) {
+                hasPlacedOrder.current = true;
+                try {
+                    // Actually place the order in the system
+                    await placeOrder(paymentMethod, address);
+                    console.log('Order placed successfully from payment');
+                } catch (error) {
+                    console.error('Error placing order:', error);
+                }
+            }
+        };
 
-            // Redirect to profile after 5 seconds
-            const timer = setTimeout(() => {
-                navigate('/profile');
-            }, 5000);
+        handleOrderPlacement();
 
-            return () => clearTimeout(timer);
-        }
-    }, []);
+        // Redirect to profile after 5 seconds
+        const timer = setTimeout(() => {
+            navigate('/profile');
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, [totalAmount, address, paymentMethod, placeOrder, navigate]);
 
     if (!totalAmount) {
         return <div className="payment-container">Invalid Session</div>;

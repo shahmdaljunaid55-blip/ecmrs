@@ -10,7 +10,7 @@ const Checkout = () => {
     const navigate = useNavigate();
     const totalAmount = getTotalCartAmount();
 
-    const handlePlaceOrder = () => {
+    const handlePlaceOrder = async () => {
         if (!selectedAddressId) {
             alert("Please select a shipping address.");
             return;
@@ -21,9 +21,13 @@ const Checkout = () => {
         if (paymentMethod === 'sslcommerz') {
             navigate('/payment/sslcommerz', { state: { totalAmount, address, paymentMethod: 'sslcommerz' } });
         } else {
-            placeOrder(paymentMethod, address);
-            alert("Order placed successfully!");
-            navigate('/profile');
+            try {
+                await placeOrder(paymentMethod, address);
+                alert("Order placed successfully!");
+                navigate('/profile');
+            } catch (error) {
+                // Error already handled in placeOrder
+            }
         }
     };
 
@@ -63,7 +67,8 @@ const Checkout = () => {
                             className={`payment-option ${paymentMethod === 'sslcommerz' ? 'selected' : ''}`}
                             onClick={() => setPaymentMethod('sslcommerz')}
                         >
-                            <span>SSLCommerz</span>
+                            <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png" alt="SSLCommerz" className="payment-logo" />
+                            <span>Pay with SSLCommerz</span>
                         </div>
                         <div
                             className={`payment-option ${paymentMethod === 'nagad' ? 'selected' : ''}`}

@@ -8,7 +8,7 @@ const Footer = () => {
         <footer className="footer">
             <div className="container footer-container">
                 <div className="footer-section">
-                    <h3 className="footer-logo glow-text">Luminous Lux</h3>
+                    <h3 className="footer-logo glow-text">Nafis | Mashnuba</h3>
                     <p>Timeless elegance for the modern soul.</p>
                 </div>
                 <div className="footer-section">
@@ -40,7 +40,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className="footer-bottom">
-                <p>&copy; 2024 Luminous Lux. All rights reserved.</p>
+                <p>&copy; 2024 Nafis | Mashnuba. All rights reserved.</p>
             </div>
         </footer>
     );

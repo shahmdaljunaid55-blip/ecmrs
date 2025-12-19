@@ -1,0 +1,113 @@
+.admin-login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-color);
+    padding: 20px;
+}
+
+.login-container {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color);
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 4px 12px rgba(128, 0, 32, 0.08);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.login-header h1 {
+    font-size: 2rem;
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.login-header p {
+    color: var(--muted-text);
+    font-size: 0.95rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.error-message {
+    background-color: rgba(128, 0, 32, 0.1);
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    padding: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    padding: 12px 15px;
+    border: 1.5px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-family: 'Cormorant Garamond', serif;
+    transition: border-color var(--transition-speed);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--text-color);
+}
+
+.login-btn {
+    padding: 14px;
+    background-color: var(--text-color);
+    color: #FFFFFF;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    background-color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(128, 0, 32, 0.2);
+}
+
+.login-hint {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.login-hint small {
+    color: var(--muted-text);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 40px 25px;
+    }
+}

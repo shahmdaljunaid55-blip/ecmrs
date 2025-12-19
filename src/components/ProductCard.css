@@ -1,14 +1,15 @@
 .product-card {
-    background-color: var(--secondary-color);
-    border-radius: 10px;
+    background-color: #FFFFFF;
+    border-radius: 0;
     overflow: hidden;
     transition: transform var(--transition-speed), box-shadow var(--transition-speed);
     position: relative;
+    border: 1px solid var(--border-color);
 }
 
 .product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px var(--accent-glow);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(128, 0, 32, 0.08);
 }
 
 .product-image {
@@ -30,13 +31,13 @@
 
 .wishlist-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    border: none;
-    color: white;
-    width: 35px;
-    height: 35px;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -54,8 +55,9 @@
 
 .wishlist-btn:hover,
 .wishlist-btn.active {
-    background: var(--accent-color);
-    color: var(--bg-color);
+    background: var(--text-color);
+    color: #FFFFFF;
+    border-color: var(--text-color);
 }
 
 .product-info {
@@ -64,25 +66,28 @@
 }
 
 .product-category {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--muted-text);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
 
 .product-name {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
     color: var(--text-color);
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 .product-price {
-    font-size: 1.1rem;
-    color: var(--accent-color);
-    font-weight: bold;
-    margin-bottom: 15px;
+    font-size: 1rem;
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: 18px;
 }
 
 .card-actions {
@@ -93,21 +98,10 @@
 
 .add-to-cart {
     width: 100%;
-    font-size: 1rem;
-    font-family: 'Pacifico', cursive;
-    letter-spacing: 1px;
-}
-
-.order-now-btn {
-    width: 100%;
-    font-size: 1rem;
-    background: transparent;
-    border: 2px solid var(--accent-color);
-    color: var(--accent-color);
-    letter-spacing: 1px;
-}
-
-.order-now-btn:hover {
-    background: var(--accent-color);
-    color: #fff;
+    font-size: 0.85rem;
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    padding: 12px;
+    border: 1.5px solid var(--text-color);
 }

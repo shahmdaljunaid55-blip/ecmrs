@@ -1,0 +1,155 @@
+.products-management-page {
+    max-width: 1400px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: var(--text-color);
+    color: #FFFFFF;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(128, 0, 32, 0.2);
+}
+
+.search-section {
+    margin-bottom: 25px;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 15px;
+    border: 1.5px solid var(--border-color);
+    background-color: #FFFFFF;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-family: 'Cormorant Garamond', serif;
+    transition: border-color var(--transition-speed);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--text-color);
+}
+
+.products-table-section {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color);
+    padding: 30px;
+}
+
+.product-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-edit,
+.btn-delete {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 14px;
+    border: 1.5px solid;
+    background-color: transparent;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.btn-edit {
+    border-color: #1976D2;
+    color: #1976D2;
+}
+
+.btn-edit:hover {
+    background-color: #1976D2;
+    color: #FFFFFF;
+}
+
+.btn-delete {
+    border-color: #D32F2F;
+    color: #D32F2F;
+}
+
+.btn-delete:hover {
+    background-color: #D32F2F;
+    color: #FFFFFF;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 20px;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--text-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-container p {
+    color: var(--muted-text);
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .products-table-section {
+        padding: 20px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}

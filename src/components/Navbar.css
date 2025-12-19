@@ -1,6 +1,6 @@
 .navbar {
-    background-color: rgba(255, 240, 245, 0.95);
-    height: 80px;
+    background-color: rgba(245, 241, 237, 0.98);
+    height: 75px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,7 +8,7 @@
     top: 0;
     z-index: 1000;
     border-bottom: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
 }
 
 .navbar-container {
@@ -19,11 +19,11 @@
 }
 
 .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--accent-color);
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text-color);
+    letter-spacing: 3px;
+    text-transform: capitalize;
 }
 
 .nav-menu {
@@ -48,18 +48,16 @@
     content: '';
     position: absolute;
     width: 0;
-    height: 2px;
+    height: 1.5px;
     bottom: -5px;
     left: 0;
-    background-color: var(--accent-color);
+    background-color: var(--text-color);
     transition: width var(--transition-speed);
-    box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .nav-links li a:hover,
 .nav-links li a.active {
-    color: var(--accent-color);
-    text-shadow: 0 0 8px var(--accent-glow);
+    color: var(--text-color);
 }
 
 .nav-links li a:hover::after,
@@ -102,6 +100,37 @@
     align-items: center;
 }
 
+.notification-icon .notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ff4757, #ff6348);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 4px rgba(255, 71, 87, 0);
+    }
+}
+
 .menu-icon {
     display: none;
     cursor: pointer;
@@ -117,19 +146,21 @@
 }
 
 .login-btn {
-    padding: 5px 15px;
-    font-size: 0.9rem;
-    border-radius: 20px;
-    background-color: var(--accent-color);
-    color: var(--bg-color);
-    border: none;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    border-radius: 0;
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1.5px solid var(--text-color);
     cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    transition: all var(--transition-speed);
 }
 
 .login-btn:hover {
-    transform: scale(1.05);
+    background-color: var(--text-color);
+    color: var(--bg-color);
 }
 
 /* Mobile Responsiveness */

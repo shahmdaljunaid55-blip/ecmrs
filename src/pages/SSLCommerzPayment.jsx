@@ -28,7 +28,7 @@ const SSLCommerzPayment = () => {
             <div className="ssl-header">
                 <img src="https://securepay.sslcommerz.com/public/image/sslcommerz.png" alt="SSLCommerz" className="ssl-logo" />
                 <div className="store-info">
-                    <p>Merchant: <strong>Luminous Lux</strong></p>
+                    <p>Merchant: <strong>Nafis | Mashnuba</strong></p>
                     <p>Amount: <strong>৳{totalAmount.toLocaleString()}</strong></p>
                 </div>
             </div>

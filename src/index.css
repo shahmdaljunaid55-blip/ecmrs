@@ -1,20 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Cormorant+Garamond:wght@600&display=swap');
 
 :root {
-  --bg-color: #fff0f5;
-  /* Lavender Blush */
-  --text-color: #4a044e;
-  /* Dark Pink/Purple */
-  --accent-color: #db2777;
-  /* Pink 600 */
-  --accent-glow: rgba(219, 39, 119, 0.4);
-  --secondary-color: #fce7f3;
-  /* Pink 100 */
-  --footer-bg: #fbcfe8;
-  /* Pink 200 */
-  --border-color: rgba(219, 39, 119, 0.2);
-  --muted-text: #831843;
-  --font-main: 'Inter', sans-serif;
+  --bg-color: #F5F1ED;
+  /* Beige/Cream */
+  --text-color: #800020;
+  /* Burgundy */
+  --accent-color: #8B3A3A;
+  /* Refined Burgundy */
+  --accent-glow: rgba(139, 58, 58, 0.15);
+  --secondary-color: #FAF8F6;
+  /* Light Beige */
+  --footer-bg: #F0EBE7;
+  /* Soft Beige */
+  --border-color: rgba(139, 58, 58, 0.15);
+  --muted-text: #A05555;
+  /* Muted Burgundy */
+  --font-main: 'Cormorant Garamond', serif;
   --transition-speed: 0.3s;
 }
 
@@ -28,6 +29,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: var(--font-main);
+  font-weight: 600;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -57,19 +59,21 @@ ul {
 }
 
 .btn {
-  padding: 10px 20px;
-  border: 2px solid var(--accent-color);
+  padding: 12px 28px;
+  border: 1.5px solid var(--text-color);
   background: transparent;
-  color: var(--accent-color);
+  color: var(--text-color);
   cursor: pointer;
   transition: all var(--transition-speed) ease;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  font-size: 0.85rem;
+  border-radius: 0;
 }
 
 .btn:hover {
-  background: var(--accent-color);
+  background: var(--text-color);
   color: var(--bg-color);
-  box-shadow: 0 0 20px var(--accent-glow);
+  box-shadow: 0 2px 8px rgba(128, 0, 32, 0.2);
 }

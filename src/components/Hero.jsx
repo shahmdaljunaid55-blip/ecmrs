@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaPause, FaPlay } from 'react-icons/fa';
 import './Hero.css';
 
 const slides = [
@@ -25,18 +26,21 @@ const slides = [
 const Hero = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(true);
+    const [isPaused, setIsPaused] = useState(false);
 
     // Clone the first slide and add it to the end
     const extendedSlides = [...slides, { ...slides[0], id: 'clone' }];
 
     useEffect(() => {
+        if (isPaused) return; // Don't auto-advance when paused
+
         const interval = setInterval(() => {
             setCurrentSlide((prev) => prev + 1);
             setIsTransitioning(true);
         }, 4000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [isPaused]);
 
     useEffect(() => {
         if (currentSlide === slides.length) {
@@ -49,6 +53,10 @@ const Hero = () => {
             return () => clearTimeout(timeout);
         }
     }, [currentSlide]);
+
+    const togglePause = () => {
+        setIsPaused(!isPaused);
+    };
 
     return (
         <section className="hero" id="home">
@@ -75,6 +83,14 @@ const Hero = () => {
                     </div>
                 ))}
             </div>
+
+            <button
+                className="hero-pause-btn"
+                onClick={togglePause}
+                title={isPaused ? "Play slideshow" : "Pause slideshow"}
+            >
+                {isPaused ? <FaPlay /> : <FaPause />}
+            </button>
 
             <div className="hero-dots">
                 {slides.map((_, index) => (

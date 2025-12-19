@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaShoppingCart, FaHeart, FaUser } from 'react-icons/fa';
+import { FaShoppingCart, FaHeart, FaUser, FaBell } from 'react-icons/fa';
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 import { ShopContext } from '../context/ShopContext';
 import SearchBar from './SearchBar';
@@ -9,7 +9,7 @@ import './Navbar.css';
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('home');
-    const { getTotalCartItems, setSearchQuery } = useContext(ShopContext);
+    const { getTotalCartItems, setSearchQuery, unreadCount } = useContext(ShopContext);
     const cartItemCount = getTotalCartItems();
     const location = useLocation();
 
@@ -64,6 +64,10 @@ const Navbar = () => {
                     <div className="nav-actions">
                         <SearchBar onSearch={setSearchQuery} />
                         <Link to="/wishlist" className="action-icon"><FaHeart /></Link>
+                        <Link to="/notifications" className="action-icon notification-icon">
+                            <FaBell />
+                            {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+                        </Link>
                         <Link to="/cart" className="action-icon cart-icon">
                             <FaShoppingCart />
                             {cartItemCount > 0 && <span className="cart-count">{cartItemCount}</span>}
